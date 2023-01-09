@@ -1,0 +1,25 @@
+services:
+  redis:
+    build: ./redis
+    ports:
+      - '6379'
+    volumes:
+      - ./redis/data:/data
+    environment:
+      - "REDIS_ARGS=--save 20 1"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - back-tier
+  backend:
+    restart: on-failure
+    build: ./backend
+    ports:
+      - '8080:8080'
+    networks:
+      - back-tier
+
+networks:
+  back-tier: {}
